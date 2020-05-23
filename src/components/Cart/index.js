@@ -4,6 +4,7 @@ import './index.css';
 
 export default function Cart() {
     const courses = useSelector(state => state.data);
+    const totals = useSelector(state => state.total);
     // const items = useSelector(state => state.items);
     const dispatch = useDispatch();
 
@@ -66,10 +67,9 @@ export default function Cart() {
                 );
             }
             )}
-
-
-
+            <h1> Total : {totals}</h1>
 </div>
+
         </>
     );
 }

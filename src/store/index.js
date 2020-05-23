@@ -12,28 +12,39 @@ function courses(state = INITIAL_STATE, action) {
 
             const maxPurchase = 10;
             const newCart = [...state.data];
+            // var newTotal = [...state.total];
             const idAdd = newCart.findIndex(item => item.id === action.payload.id);
             const addItem = {
                 ...newCart[idAdd]
             };
 
             addItem.qty++;
-
+            console.log('falai');
+            console.log(state.total);
+            console.log('falae agr');
+            console.log(addItem.value);
+            var sumTotal = state.total + addItem.value;
+            sumTotal = parseFloat(sumTotal);
             if (addItem.qty > maxPurchase) {
                 addItem.qty = maxPurchase;
             }
             newCart[idAdd] = addItem;
-
-            return { ...state, data: newCart };
+            // newTotal.total = newTotal.total + addItem.value;
+            return { ...state, data: newCart, total: sumTotal };
 
         case 'RMV_QTY':
 
             const newCartRmv = [...state.data];
-
+            var subTotal = state.total;
             const idRmv = newCartRmv.findIndex(item => item.id === action.payload.id);
             const rmvItem = {
                 ...newCartRmv[idRmv]
             };
+
+            if (rmvItem.qty > 0)  {
+                subTotal -= rmvItem.value;
+                subTotal = parseFloat(subTotal);
+            } 
 
             rmvItem.qty--;
 
@@ -41,25 +52,35 @@ function courses(state = INITIAL_STATE, action) {
                 rmvItem.qty = 0;
             }
             newCartRmv[idRmv] = rmvItem;
-
-            return { ...state, data: newCartRmv };
+            
+            return { ...state, data: newCartRmv, total: subTotal };
 
         case 'DEL_ITEM':
-
             const updatedCart = [...state.data];
             const updatedItemIndex = updatedCart.findIndex(item => item.id === action.payload.id);
-
+            var delTotal = state.total;
+            const delItem = {...updatedCart[updatedItemIndex]};
+            
             updatedCart.splice(updatedItemIndex, 1);
-
-            return {
-                ...state,
-                data: updatedCart
+            
+            if (state.total > 0) {
+                delTotal = delTotal - (delItem.qty * delItem.value);
             }
-
+            
+            return { ...state, data: updatedCart, total: delTotal };
+        
         case 'ADD_TO_CART':
+            const newCartAdd = [...state.data];
+            var addTotal = state.total;
+            const idNewAdd = newCartAdd.findIndex(item => item.id === action.payload.id);
+            const addNewItem = {...newCartAdd[idNewAdd]};
+                           
+            addTotal =+ addNewItem.value;
+
             return {
                 ...state,
-                data: [...state.data, action.payload.idAdd]
+                data: [...state.data, action.payload.idAdd],
+                total: addTotal
             }
 
         case 'SHOW_CASE':
